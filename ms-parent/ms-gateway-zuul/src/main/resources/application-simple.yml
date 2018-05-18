@@ -1,0 +1,40 @@
+# zuul网关，简单方式，即通过zuul.routes.url绑定，有局限性，不推荐（注册到服务中心）
+spring:
+  application:
+    name: gateway-service-zuul
+    
+# 关闭安全认证，springboot 1.5.X 以上默认开通了安全认证，使用CURL,POSTMAN等工具更新远程配置信息是会出现权限问题    
+management:
+  security:
+    enabled: false    
+
+# 服务器配置
+server:
+  # 指定该Eureka实例的端口
+  port: 8730
+  
+# 这里的配置表示，访问/it/** 直接重定向到http://www.baidu.com/**,通过url映射的方式来实现zull的转发有局限性，比如每增加一个服务就需要配置一条内容，另外后端的服务如果是动态来提供，就不能采用这种方案来配置了。实际上在实现微服务架构时，服务名与服务实例地址的关系在eureka server中已经存在了，所以只需要将Zuul注册到eureka server上去发现其他服务，就可以实现对serviceId的映射
+zuul:
+  routes:
+    # 可以随便写，在zuul上面唯一即可；当这里的值 = service-id时，service-id可以不写。
+    baidu: 
+      # 想要映射到的路径
+      path: /it/** 
+      # 重定向到 http://www.github.com/，启动后在浏览器中输入如：localhost:8730/it可直接转发到www.github.com页面，说明zuul网关生效
+      url: http://www.github.com/   
+    remote-config:
+      path: /remote-config/**
+      url: http://localhost:8740/
+  
+  
+# eureka服务配置
+eureka:
+  instance:
+    hostname: gateway-service-zuul
+  client:  
+    serviceUrl:
+      # 注册到高可用的服务中心（集群）
+      defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka/,http://peer3:8763/eureka/
+
+
+

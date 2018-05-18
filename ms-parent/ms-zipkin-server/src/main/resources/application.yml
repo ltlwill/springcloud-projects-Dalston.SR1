@@ -1,0 +1,26 @@
+# 服务消费者（同时注册到服务中心）
+# 已配置到bootstrap.yml中
+spring:
+  application:
+    name: zipkin-server
+    
+# 关闭安全认证，springboot 1.5.X 以上默认开通了安全认证，使用CURL,POSTMAN等工具更新远程配置信息是会出现权限问题    
+management:
+  security:
+    enabled: false    
+
+# 服务器配置
+server:
+  # 指定该Eureka实例的端口
+  port: 8720
+
+# eureka服务配置 （注：此时不能放在application中配置了，需放在bootstrap里才能在应用启动前正确的获取的配置中心的配置信息）
+eureka:
+  client:
+    serviceUrl:
+      # 注册到高可用的服务中心（集群）
+      # 无认证
+      # defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka/,http://peer3:8763/eureka/
+      # 需认证版（规则：http://user:password@host:port/eureka/）
+      defaultZone: http://eureka_admin:eureka_admin_123@peer1:8761/eureka/,http://eureka_admin:eureka_admin_123@peer2:8762/eureka/,http://eureka_admin:eureka_admin_123@peer3:8763/eureka/        
+          

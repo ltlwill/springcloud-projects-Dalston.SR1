@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ds.ltl.springcloud</groupId>
+	<artifactId>ms-parent</artifactId>
+	<version>1.0</version>
+	<packaging>pom</packaging>
+  
+	 <properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	 </properties>
+  
+	<!-- spring boot -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+	  	<artifactId>spring-boot-starter-parent</artifactId>
+	  	<version>1.5.4.RELEASE</version>
+	</parent>
+	<!-- spring cloud -->
+	<dependencyManagement>
+	  <dependencies>
+	    <dependency>
+	      <groupId>org.springframework.cloud</groupId>
+	      <artifactId>spring-cloud-dependencies</artifactId>
+	      <version>Dalston.SR1</version>
+	      <type>pom</type>
+	      <scope>import</scope>
+	    </dependency>
+	  </dependencies>
+	</dependencyManagement>
+  
+  	<!-- Package as an executable jar -->
+	<build>
+		<!-- <finalName>website</finalName> -->
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<!-- 打包时跳过test插件，不运行test测试用例 -->
+	  		<plugin> 
+	  			<groupId>org.apache.maven.plugins</groupId>   
+		        <artifactId>maven-surefire-plugin</artifactId>   
+		        <version>2.4.2</version>   
+		        <configuration>   
+		          <skipTests>true</skipTests>   
+		        </configuration>   
+	  		</plugin>
+	  		<!-- Maven插件构建docker镜像 （全�?插件，所有子模块都具有）-->
+	  		<plugin>
+	  			<groupId>com.spotify</groupId>
+	  			<artifactId>docker-maven-plugin</artifactId>
+	  			<version>0.4.13</version>
+	  			<!-- <version>0.4.12</version> -->
+	  			<configuration>
+	  				<!-- 注意imageName�?定要是符合正则[a-z0-9-_.]的，否则构建不会成功 -->
+	              	<!-- 详见：https://github.com/spotify/docker-maven-plugin    Invalid repository name ... only [a-z0-9-_.] are allowed-->
+	             	<imageName>${project.build.finalName}</imageName>
+	           		<baseImage>java</baseImage>
+	         		<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+	         		<!-- 使用个人京东云服务器中的docker服务测试（需要开启云服务器中docker的远程功能，参�?�：http://blog.csdn.net/weixin_36667844/article/details/74644233�? -->
+	         		<!-- <dockerHost>tcp://116.196.71.192:2375</dockerHost> --><!-- 会出现tcp protocol is not supported的问�? -->
+	         		<!-- 京东�? centos7.2 -->
+	         		<!-- <dockerHost>http://116.196.71.192:2375</dockerHost> -->
+	         		<!-- amazon aws�? ubuntu 14 -->
+	         		<dockerHost>http://18.221.77.25:2375</dockerHost>
+					<dockerCertPath>C:\Users\EFE050\.docker\machine\machines\default</dockerCertPath>
+					<!-- <dockerDirectory>src/main/resources/docker</dockerDirectory> -->
+			        <resources>
+			         	<resource>
+			         		<targetPath>/</targetPath>
+			         		<directory>${project.build.directory}</directory>
+			         		<include>${project.build.finalName}.jar</include>
+			         	</resource>
+			        </resources>
+	  			</configuration>
+	  		</plugin>
+		</plugins>
+	</build>
+
+  <dependencies>
+      <!-- 默认依赖spring cloud config（配置服务） -->
+      <dependency>
+      	<groupId>org.springframework.cloud</groupId>
+      	<artifactId>spring-cloud-starter-config</artifactId>
+      </dependency>
+      
+	  <!-- spring boot 实现热部�?? -->
+	  <dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-devtools</artifactId>
+	    <optional>true</optional> <!-- 这个要为 true 热部署才有效 -->
+	  </dependency>
+	  
+	  <!-- actuator健康指标 -->
+	  <dependency>
+        <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-actuator</artifactId>
+      </dependency>
+      
+      <!-- spring cloud bus 依赖 :利用消息总线触发�??个客户端bus/refresh,而刷新所有客户端的配置的目的，无论配置服务中心还是客户端都需要依赖spring cloud bus，否则刷新不生效 -->
+   	  <dependency>
+   		<groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+   	  </dependency>
+	  
+	  <!-- spring boot test -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-test</artifactId>
+		<scope>test</scope>
+      </dependency>
+	  
+	  <!-- junit -->
+	  <dependency>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	    <version>4.12</version>
+	    <scope>test</scope>
+	  </dependency>
+  </dependencies>
+  <!-- 子模�?? -->
+  <modules>
+  	<module>ms-eureka-server</module>
+    <module>ms-eureka-client</module>
+   	<module>ms-web</module>
+    <module>ms-config-server</module>
+    <module>ms-gateway-zuul</module>
+    <module>ms-zipkin-server</module>
+  </modules>
+</project>

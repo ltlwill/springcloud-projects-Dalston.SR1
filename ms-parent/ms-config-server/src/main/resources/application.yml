@@ -1,0 +1,48 @@
+# spring cloud微服务配置中心，有两种方式：远程方式(通常使用git仓库)和本地方式（本地目录）
+# 关于配置内容的热加载：如果不重启应用，能够做到配置的刷新吗？答案显然是可以的。在远程配置中心（如git仓库）修改配置后，然后使用命令（本文使用的是curl，Linux和Windows都有curl工具，当然也可以借助其他工具，例如Postman等）
+# 命令如下：curl  -X POST http://localhost:8740/refresh  注：使用远程配置的应用需要加上@RefreshScope注解，才使刷新生效
+spring:
+  application:
+    name: config-server
+  profiles:
+    # 使用subversion(svn)方式
+    active: subversion
+  
+  # rabbitmq配置  
+  rabbitmq:
+    # rabbitmq主机地址
+    host: 192.168.2.55
+    # rabbitmq qmpq端口（默认5672）
+    port: 5672
+    # rabbitmq用户名
+    username: admin
+    # rabbitmq 用户密码
+    password: admin1234
+  cloud:
+    bus:
+      trace:
+        # 开启消息跟踪
+        enable: true
+    
+# spring boot 1.5.x增加了安全认证，需要关闭安全认证，否则使用客户端（如CURL工具）模拟请求时出错
+management: 
+  security: 
+    enabled: false
+    
+# 服务器配置
+server:
+  # 指定端口
+  port: 8770
+  
+# 注册到eureka服务注册中心  
+eureka:
+  client:
+    serviceUrl:
+      # 将配置中心服务注册到高可用的eureka服务注册中心（集群）
+      # 无需要认证版
+      # defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka/,http://peer3:8763/eureka/ 
+      # 需认证版（规则：http://user:password@host:port/eureka/）
+      defaultZone: http://eureka_admin:eureka_admin_123@peer1:8761/eureka/,http://eureka_admin:eureka_admin_123@peer2:8762/eureka/,http://eureka_admin:eureka_admin_123@peer3:8763/eureka/    
+
+
+

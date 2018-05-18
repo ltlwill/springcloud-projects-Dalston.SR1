@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>ds.ltl.springcloud</groupId>
+  <artifactId>ms-zipkin-server</artifactId>
+  <version>1.0</version>
+  <name>ms-zipkin-server</name>
+  <url>http://maven.apache.org</url>
+  
+  <!-- 父工程 -->
+  <parent>
+    <groupId>ds.ltl.springcloud</groupId>
+    <artifactId>ms-parent</artifactId>
+    <version>1.0</version>
+  </parent>
+  
+  <dependencies>
+    <!-- eureka -->
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-eureka</artifactId>
+    </dependency>
+    <!-- Twitter zipkin -->
+    <dependency>
+        <groupId>io.zipkin.java</groupId>
+        <artifactId>zipkin-server</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>io.zipkin.java</groupId>
+        <artifactId>zipkin-autoconfigure-ui</artifactId>
+    </dependency>
+  </dependencies>
+</project>

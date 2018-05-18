@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>ds.ltl.springcloud</groupId>
+  <artifactId>ms-eureka-server</artifactId>
+  <version>1.0</version>
+  <name>ms-eureka-server</name>
+  <url>http://maven.apache.org</url>
+  
+  <!-- 父工程 -->
+  <parent>
+    <groupId>ds.ltl.springcloud</groupId>
+    <artifactId>ms-parent</artifactId>
+    <version>1.0</version>
+  </parent>
+  
+  <!-- <build>
+  	<plugins>
+  		Maven插件构建docker镜像
+  		<plugin>
+  			<groupId>com.spotify</groupId>
+  			<artifactId>docker-maven-plugin</artifactId>
+  			<version>0.4.13</version>
+  			<version>0.4.12</version>
+  			<configuration>
+  				注意imageName一定要是符合正则[a-z0-9-_.]的，否则构建不会成功
+              	详见：https://github.com/spotify/docker-maven-plugin    Invalid repository name ... only [a-z0-9-_.] are allowed
+             	<imageName>${project.build.finalName}</imageName>
+           		<baseImage>java</baseImage>
+         		<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+         		使用个人京东云服务器中的docker服务测试（需要开启云服务器中docker的远程功能，参考：http://blog.csdn.net/weixin_36667844/article/details/74644233）
+         		<dockerHost>tcp://116.196.71.192:2375</dockerHost>会出现tcp protocol is not supported的问题
+         		<dockerHost>http://116.196.71.192:2375</dockerHost>
+         		amazon aws云 ubuntu 14
+         		<dockerHost>http://18.221.77.25:2375</dockerHost>
+				<dockerCertPath>C:\Users\EFE050\.docker\machine\machines\default</dockerCertPath>
+				<dockerDirectory>src/main/resources/docker</dockerDirectory>
+		        <resources>
+		         	<resource>
+		         		<targetPath>/</targetPath>
+		         		<directory>${project.build.directory}</directory>
+		         		<include>${project.build.finalName}.jar</include>
+		         	</resource>
+		        </resources>
+  			</configuration>
+  		</plugin>
+  	</plugins>
+  </build> -->
+  
+  <dependencies>
+  	<!-- eureka 服务注册中心 -->
+  	<dependency>
+  		<groupId>org.springframework.cloud</groupId>
+  		<artifactId>spring-cloud-starter-eureka-server</artifactId>
+  	</dependency>
+  	<!-- spring cloud security 实现eureka服务注册中心开启用户认证，即：需要用户密码登录才能看eureka注册中心界面-->
+  	  <dependency>
+  	  	  <groupId>org.springframework.cloud</groupId>
+  	  	  <artifactId>spring-cloud-starter-security</artifactId>
+  	  </dependency>
+  </dependencies>
+</project>
